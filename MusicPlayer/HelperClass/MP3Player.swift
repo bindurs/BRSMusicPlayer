@@ -1,4 +1,4 @@
-//
+  //
 //  MP3Player.swift
 //  MusicPlayer
 //
@@ -14,13 +14,13 @@ class MP3Player: NSObject, AVAudioPlayerDelegate {
     
     var player : AVAudioPlayer?
     var currentTrackIndex = 0
-    var tracks :[String] = [String]()
-       var songList = [MPMediaItem]()
+    var tracks :[MPMediaItem] = [MPMediaItem]()
+
     override init() {
         
         tracks = FileReader.readFiles()
         super.init()
-        queueTrack()
+        queueTrack()   
         
     }
     
@@ -29,13 +29,17 @@ class MP3Player: NSObject, AVAudioPlayerDelegate {
             player = nil
         }
         
-        let url = NSURL(fileURLWithPath: tracks[currentTrackIndex] as String)
+        let url = tracks[currentTrackIndex].assetURL
+        
+        // Removed deprecated use of AVAudioSessionDelegate protocol
+        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        try! AVAudioSession.sharedInstance().setActive(true)
         
         do {
-            player = try AVAudioPlayer(contentsOf: url as URL)
+            player = try AVAudioPlayer(contentsOf: url!)
             player?.delegate = self
             player?.prepareToPlay()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "SetTrackNameText"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "SetTrackNameText"), object: nil)
             
         } catch {
             print(error)
@@ -97,8 +101,8 @@ class MP3Player: NSObject, AVAudioPlayerDelegate {
     }
     
     func getCurrentTrackName() -> String {
-        let trackName = NSURL(fileURLWithPath: tracks[currentTrackIndex] as String).deletingLastPathComponent
-        return (trackName?.absoluteString)!
+        let trackName = tracks[currentTrackIndex].title
+        return (trackName)!
     }
     
     func getCurrentTimeAsString() -> String {
@@ -129,5 +133,9 @@ class MP3Player: NSObject, AVAudioPlayerDelegate {
         if flag == true {
             nextSong(songFinishedPlaying: true)
         }
+    }
+    
+    func getSongList() -> [MPMediaItem] {
+        return tracks
     }
 }
