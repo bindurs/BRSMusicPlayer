@@ -233,6 +233,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
      
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector:#selector(updateViewsWithTimer(theTimer:)), userInfo: nil, repeats: true)
         timer?.fire()
+        
     }
 
     func updateViewsWithTimer(theTimer: Timer){
@@ -245,6 +246,15 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         progress = getProgress()
         progressBar.progress = progress!
         
+        //        var basketTopFrame : CGRect = trackName.frame
+        //        basketTopFrame.origin.x = basketTopFrame.origin.x-20
+        //
+        //        UIView.animate(withDuration: 1, delay: 0.0, options:UIViewAnimationOptions.curveEaseIn, animations: {
+        //            self.trackName.frame = basketTopFrame
+        //        }) { complete in
+        //            
+        //        }
+        
     }
 
     func setTrackName(){
@@ -252,7 +262,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func setupNotificationCenter(){
-      
+        
         NotificationCenter.default.addObserver(self,selector:#selector(MainViewController.setTrackName), name:NSNotification.Name(rawValue: "SetTrackNameText"),object:nil)
     }
     

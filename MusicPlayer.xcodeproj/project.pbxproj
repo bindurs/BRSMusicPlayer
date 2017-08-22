@@ -11,9 +11,9 @@
 		F424A6E21F41AB4700C6FC5B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F424A6E01F41AB4700C6FC5B /* Main.storyboard */; };
 		F424A6E41F41AB4700C6FC5B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F424A6E31F41AB4700C6FC5B /* Assets.xcassets */; };
 		F424A6E71F41AB4700C6FC5B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F424A6E51F41AB4700C6FC5B /* LaunchScreen.storyboard */; };
-		F424A6F11F41AC0200C6FC5B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F424A6F01F41AC0200C6FC5B /* MainViewController.swift */; };
 		F424A6F31F41AC4300C6FC5B /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F424A6F21F41AC4300C6FC5B /* FileReader.swift */; };
 		F4354FF01F44037E001642D6 /* BackGroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4354FEF1F44037E001642D6 /* BackGroundView.swift */; };
+		F4CB53A61F4C0E040027148F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F424A6F01F41AC0200C6FC5B /* MainViewController.swift */; };
 		F4E019F31F456A9400358173 /* SongListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E019F21F456A9400358173 /* SongListTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -173,8 +173,8 @@
 				F4E019F31F456A9400358173 /* SongListTableViewCell.swift in Sources */,
 				F424A6F31F41AC4300C6FC5B /* FileReader.swift in Sources */,
 				F424A6DD1F41AB4700C6FC5B /* AppDelegate.swift in Sources */,
-				F424A6F11F41AC0200C6FC5B /* MainViewController.swift in Sources */,
 				F4354FF01F44037E001642D6 /* BackGroundView.swift in Sources */,
+				F4CB53A61F4C0E040027148F /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
