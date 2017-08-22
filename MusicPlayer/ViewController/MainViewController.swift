@@ -31,7 +31,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet var songlistTabelview: UITableView!
 
-   
+    override func viewDidAppear(_ animated: Bool) {
+        changePage()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,7 +58,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         getSongList()
         songlistTabelview.reloadData()
-        changePage()
     }
     
     func setupPlayerView() {
