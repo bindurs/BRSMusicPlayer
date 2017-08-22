@@ -15,9 +15,7 @@ import UIKit
     
     override func draw(_ rect: CGRect) {
        
-        let path = UIBezierPath(roundedRect: rect,
-                                byRoundingCorners: UIRectCorner.allCorners,
-                                cornerRadii: CGSize(width: 8.0, height: 8.0))
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: UIRectCorner.allCorners, cornerRadii: CGSize(width: 8.0, height: 8.0))
         path.addClip()
         
         // get the current context

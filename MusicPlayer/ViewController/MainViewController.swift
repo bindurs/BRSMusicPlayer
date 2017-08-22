@@ -1,4 +1,4 @@
-                                                                                                      //
+                                                                                                    
 //  MainViewController.swift
 //  MusicPlayer
 //
@@ -9,92 +9,250 @@
 import UIKit
 import MediaPlayer
 
-class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate {
     
-    var mp3Player:MP3Player?
     var timer:Timer?
     var tracks : [MPMediaItem]?
+    var player : AVAudioPlayer?
+    var currentTrackIndex : Int = 0
+    var progress : Float?
     
+    @IBOutlet var songImageView: UIImageView!
     @IBOutlet var pageControl: UIPageControl!
     @IBOutlet var scrollView: UIScrollView!
-    @IBOutlet var songlistTabelview: UITableView!
     @IBOutlet weak var trackName: UILabel!
     @IBOutlet weak var trackTime: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
+    @IBOutlet var playNextButton: UIButton!
+    @IBOutlet var playPreviousButton: UIButton!
+    @IBOutlet var playButton: UIButton!
+    @IBOutlet var stopButton: UIButton!
+    @IBOutlet var pauseButton: UIButton!
+    
+    @IBOutlet var songlistTabelview: UITableView!
+
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         
         pageControl.addTarget(self, action: #selector(changePage), for: UIControlEvents.valueChanged)
-        mp3Player = MP3Player()
-        setupNotificationCenter()
+        initialSetup()
+        setupPlayerView()
+        
+        // button actions
+        playPreviousButton.addTarget(self, action: #selector(previousSong), for: UIControlEvents.touchUpInside)
+        pauseButton.addTarget(self, action: #selector(pause), for: UIControlEvents.touchUpInside)
+        playButton.addTarget(self, action: #selector(play), for: UIControlEvents.touchUpInside)
+        stopButton.addTarget(self, action: #selector(stop), for: UIControlEvents.touchUpInside)
+        playNextButton.addTarget(self, action: #selector(nextSong(songFinishedPlaying:)), for: UIControlEvents.touchUpInside)
+        
+    }
+    
+    // MARK: - Methods
+    
+    func initialSetup() {
+        
+        getSongList()
+        songlistTabelview.reloadData()
+        changePage()
+    }
+    
+    func setupPlayerView() {
+    
         setTrackName()
+        queueTrack()
+        setupNotificationCenter()
         updateViews()
         
-        tracks = mp3Player?.getSongList()
-        songlistTabelview.reloadData()
+        playButton.isEnabled = true
+        pauseButton.isEnabled = false
+        stopButton.isEnabled = false
         
-        scrollView.scrollRectToVisibleCenteredOn(visibleRect: CGRect(x: self.view.frame.size.width,y:0,width:self.view.frame.size.width,height:scrollView.frame.size.height), animated: true)
+        progressBar.isHidden = true
+    }
+    
+    func getSongList() {
+        
+        tracks = FileReader.readFiles()
+    }
+    
+    func queueTrack() {
+        
+        if (player != nil) {
+            player = nil
+        }
+        
+        let url = tracks?[currentTrackIndex].assetURL
+        
+        // Removed deprecated use of AVAudioSessionDelegate protocol
+        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        try! AVAudioSession.sharedInstance().setActive(true)
+        
+        do {
+            player = try AVAudioPlayer(contentsOf: url!)
+            player?.delegate = self
+            player?.prepareToPlay()
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "SetTrackNameText"), object: nil)
+            
+            let image = tracks?[currentTrackIndex].artwork
+            
+            songImageView.image = image?.image(at:CGSize(width: songImageView.frame.size.width, height: songImageView.frame.size.height))
+        } catch {
+            print(error)
+        }
+    }
+    
+    func play() {
+        
+        playButton.isEnabled = false
+        pauseButton.isEnabled = true
+        stopButton.isEnabled = true
+        
+        progressBar.isHidden = false
+        
+        if player?.isPlaying == false {
+            player?.play()
+            startTimer()
+        }
+    }
+    
+    func stop(){
+        
+        progressBar.isHidden = true
+        
+        playButton.isEnabled = true
+        pauseButton.isEnabled = false
+        stopButton.isEnabled = false
+        
+        if player?.isPlaying == true {
+            player?.stop()
+            player?.currentTime = 0
+            
+            if timer != nil {
+                timer?.invalidate()
+            }
+        }
+        updateViews()
+    }
+    
+    func pause(){
+        
+        progressBar.isHidden = false
+        
+        playButton.isEnabled = true
+        pauseButton.isEnabled = false
+        stopButton.isEnabled = true
+        
+        if player?.isPlaying == true{
+            player?.pause()
+            if timer != nil {
+                timer?.invalidate()
+            }
+        }
+    }
+    
+    func nextSong(songFinishedPlaying:Bool){
+        
+        var playerWasPlaying = false
+        if player?.isPlaying == true {
+            player?.stop()
+            playerWasPlaying = true
+        }
+        
+        currentTrackIndex+=1
+        if currentTrackIndex >= (tracks?.count)! {
+            currentTrackIndex = 0
+        }
+        queueTrack()
+        if playerWasPlaying || songFinishedPlaying {
+            player?.play()
+        }
+          startTimer()
+    }
+    
+    func previousSong(){
+        
+        var playerWasPlaying = false
+        
+        if player?.isPlaying == true {
+            player?.stop()
+            playerWasPlaying = true
+        }
+        currentTrackIndex-=1
+        if currentTrackIndex < 0 {
+            currentTrackIndex = (tracks?.count)! - 1
+        }
+        
+        queueTrack()
+        if playerWasPlaying {
+            player?.play()
+        }
+          startTimer()
+    }
+    
+    func getCurrentTrackName() -> String {
+        let trackName = tracks?[currentTrackIndex].title
+        return (trackName)!
+    }
+    
+    func getCurrentTimeAsString() -> String {
+        var seconds = 0
+        var minutes = 0
+        if let time = player?.currentTime {
+            seconds = Int(time) % 60
+            minutes = (Int(time) / 60) % 60
+        }
+        return String(format: "%0.2d:%0.2d",minutes,seconds)
+    }
+    
+    func getProgress()->Float{
+    
+        var theCurrentTime = 0.0
+        var theCurrentDuration = 0.0
+        if let currentTime = player?.currentTime, let duration = player?.duration {
+            theCurrentTime = currentTime
+            theCurrentDuration = duration
+        }
+        return Float(theCurrentTime / theCurrentDuration)
+    }
+    
+    func setVolume(volume:Float){
+        player?.volume = volume
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool){
+        if flag == true {
+            nextSong(songFinishedPlaying: true)
+        }
+    }
 
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-    }
-    
-    @IBAction func playSong(sender: AnyObject) {
-        mp3Player?.play()
-        startTimer()
-    }
-    @IBAction func stopSong(sender: AnyObject) {
-        mp3Player?.stop()
-        timer?.invalidate()
-    }
-    
-    @IBAction func pauseSong(sender: AnyObject) {
-        mp3Player?.pause()
-        timer?.invalidate()
-    }
-    
-    @IBAction func playNextSong(sender: AnyObject) {
-        mp3Player?.nextSong(songFinishedPlaying: false)
-        startTimer()
-    }
-    
-    @IBAction func setVolume(sender: UISlider) {
-        mp3Player?.setVolume(volume: sender.value)
-    }
-    
-    @IBAction func playPreviousSong(sender: AnyObject) {
-        mp3Player?.previousSong()
-        startTimer()
-    }
-    
     func startTimer(){
+     
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector:#selector(updateViewsWithTimer(theTimer:)), userInfo: nil, repeats: true)
         timer?.fire()
     }
-    
+
     func updateViewsWithTimer(theTimer: Timer){
         updateViews()
     }
     
     func updateViews(){
         
-        trackTime.text = mp3Player?.getCurrentTimeAsString()
-        if let progress = mp3Player?.getProgress() {
-            progressBar.progress = progress
-        }
+        trackTime.text = getCurrentTimeAsString()
+        progress = getProgress()
+        progressBar.progress = progress!
+        
     }
-    
+
     func setTrackName(){
-        trackName.text = mp3Player?.getCurrentTrackName()
+        trackName.text = getCurrentTrackName()
     }
     
     func setupNotificationCenter(){
-        NotificationCenter.default.addObserver(self,selector:#selector(MainViewController.setTrackName), name:NSNotification.Name(rawValue: "SetTrackNameText"),
-                                               object:nil)
+      
+        NotificationCenter.default.addObserver(self,selector:#selector(MainViewController.setTrackName), name:NSNotification.Name(rawValue: "SetTrackNameText"),object:nil)
     }
     
     // MARK: - PageControl Action
@@ -103,6 +261,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let originX = CGFloat(pageControl.currentPage) * self.view.frame.size.width
         
+        scrollView.scrollRectToVisible(CGRect(x:originX,y:0,width: self.view.frame.size.width,height: self.view.frame.size.height - 45), animated: true)
         scrollView.setContentOffset(CGPoint(x:originX, y:0), animated: true)
     }
     
@@ -135,6 +294,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.songImageView.image = song?.artwork?.image(at:CGSize(width: cell.songImageView.frame.size.width, height: cell.songImageView.frame.size.height))
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        changePage()
+        currentTrackIndex = indexPath.row
+        queueTrack()
+        play()
     }
     
     override func didReceiveMemoryWarning() {

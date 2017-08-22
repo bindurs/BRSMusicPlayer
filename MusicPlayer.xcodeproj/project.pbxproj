@@ -15,10 +15,7 @@
 		F424A6F31F41AC4300C6FC5B /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F424A6F21F41AC4300C6FC5B /* FileReader.swift */; };
 		F424A6F51F41AD0B00C6FC5B /* MP3Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = F424A6F41F41AD0B00C6FC5B /* MP3Player.swift */; };
 		F4354FF01F44037E001642D6 /* BackGroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4354FEF1F44037E001642D6 /* BackGroundView.swift */; };
-		F4354FF41F4441C5001642D6 /* Moonlight Bay.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F4354FF31F4441C5001642D6 /* Moonlight Bay.mp3 */; };
-		F4354FF61F4441C9001642D6 /* Opera Wheels.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F4354FF51F4441C9001642D6 /* Opera Wheels.mp3 */; };
 		F4E019F31F456A9400358173 /* SongListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E019F21F456A9400358173 /* SongListTableViewCell.swift */; };
-		F4E019F71F45A45C00358173 /* ScrollViewCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E019F61F45A45C00358173 /* ScrollViewCenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,10 +29,7 @@
 		F424A6F21F41AC4300C6FC5B /* FileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
 		F424A6F41F41AD0B00C6FC5B /* MP3Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP3Player.swift; sourceTree = "<group>"; };
 		F4354FEF1F44037E001642D6 /* BackGroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackGroundView.swift; sourceTree = "<group>"; };
-		F4354FF31F4441C5001642D6 /* Moonlight Bay.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Moonlight Bay.mp3"; sourceTree = "<group>"; };
-		F4354FF51F4441C9001642D6 /* Opera Wheels.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Opera Wheels.mp3"; sourceTree = "<group>"; };
 		F4E019F21F456A9400358173 /* SongListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongListTableViewCell.swift; sourceTree = "<group>"; };
-		F4E019F61F45A45C00358173 /* ScrollViewCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollViewCenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,12 +77,9 @@
 		F424A6EE1F41ABE500C6FC5B /* HelperClass */ = {
 			isa = PBXGroup;
 			children = (
-				F4354FF51F4441C9001642D6 /* Opera Wheels.mp3 */,
-				F4354FF31F4441C5001642D6 /* Moonlight Bay.mp3 */,
 				F424A6F21F41AC4300C6FC5B /* FileReader.swift */,
 				F424A6F41F41AD0B00C6FC5B /* MP3Player.swift */,
 				F4354FEF1F44037E001642D6 /* BackGroundView.swift */,
-				F4E019F61F45A45C00358173 /* ScrollViewCenter.swift */,
 			);
 			path = HelperClass;
 			sourceTree = "<group>";
@@ -169,11 +160,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4354FF41F4441C5001642D6 /* Moonlight Bay.mp3 in Resources */,
 				F424A6E71F41AB4700C6FC5B /* LaunchScreen.storyboard in Resources */,
 				F424A6E41F41AB4700C6FC5B /* Assets.xcassets in Resources */,
 				F424A6E21F41AB4700C6FC5B /* Main.storyboard in Resources */,
-				F4354FF61F4441C9001642D6 /* Opera Wheels.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +174,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4E019F31F456A9400358173 /* SongListTableViewCell.swift in Sources */,
-				F4E019F71F45A45C00358173 /* ScrollViewCenter.swift in Sources */,
 				F424A6F31F41AC4300C6FC5B /* FileReader.swift in Sources */,
 				F424A6DD1F41AB4700C6FC5B /* AppDelegate.swift in Sources */,
 				F424A6F11F41AC0200C6FC5B /* MainViewController.swift in Sources */,
